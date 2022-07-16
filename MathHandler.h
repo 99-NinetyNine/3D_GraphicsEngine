@@ -96,16 +96,20 @@ public:
 		return v;
 	}
 
-	OVec3 operator *(float num)
+	OVec3 operator * (float num)
 	{
 		return OVec3(m_x * num, m_y * num, m_z * num);
+	}
+	OVec3 operator /(float num)
+	{
+		return OVec3(m_x /num, m_y / num, m_z / num);
 	}
 
 	OVec3 operator +(const OVec3& vec)
 	{
 		return	 OVec3(m_x + vec.m_x, m_y + vec.m_y, m_z + vec.m_z);
 	}
-	OVec3 operator - (const OVec3& vec)
+	OVec3 operator- (const OVec3& vec)
 	{
 		return OVec3(m_x - vec.m_x, m_y - vec.m_y, m_z - vec.m_z);
 	}
@@ -116,6 +120,21 @@ public:
 		m_z += vec.m_z;
 		return *this;
 
+	}
+	OVec3 operator *=(const OVec3& vec)
+	{
+		m_x *= vec.m_x;
+		m_y *= vec.m_y;
+		m_z *= vec.m_z;
+		return *this;
+
+	}
+	void operator -()
+	{
+		m_x = -m_x;
+		m_y = -m_y;
+		m_z = -m_z;
+		//return *this;
 	}
 	OVec3 operator -=(const OVec3& vec)
 	{
@@ -131,17 +150,38 @@ public:
 		m_z = vec.m_z;
 		return *this;
 	}
-	float length() const
+	static float length(const OVec3& vec) 
 	{
-		double res = (m_x * m_x) + (m_y * m_y) + (m_z * m_z);
-		return (static_cast<float>((sqrt(res))));
+		float res = (vec.m_x * vec.m_x) + (vec.m_y * vec.m_y) + (vec.m_z * vec.m_z);
+		return (sqrtf(res));
 	}
 
+	static OVec3 reflect(const OVec3& ray, const  OVec3& normal)
+	{
+		OVec3 ray_new = ray;
+		ray_new=ray_new * -1;
+		float dot1 = dot(ray_new, normal);
+		OVec3 res;
+		res.m_x = dot1 / normal.m_x;
+		res.m_y = dot1 / normal.m_y;
+		res.m_z = dot1 / normal.m_z;
+	
+
+		return res;
+	}
+	static float clamp(float a, float b , float c)
+	{
+		if (a < b)
+			a = b;
+		if (a > c)
+			a = c;
+		return a;
+	}
 	static OVec3 normalize(const  OVec3& vec)
 	{
 		OVec3 res;
-		double leng = (vec.m_x * vec.m_x) + (vec.m_y * vec.m_y) + (vec.m_z * vec.m_z);
-		float len = static_cast<float>(sqrt(leng));
+		float leng = (vec.m_x * vec.m_x) + (vec.m_y * vec.m_y) + (vec.m_z * vec.m_z);
+		float len = sqrtf(leng);
 		if (!len)
 			return OVec3();
 
@@ -174,7 +214,17 @@ public:
 		return res;
 	}
 
-
+	static OVec3 Vector_IntersectPlane(OVec3& plane_p, OVec3& plane_n, OVec3& lineStart, OVec3& lineEnd)
+	{
+		plane_n = normalize(plane_n);
+		float plane_d = -dot(plane_n, plane_p);
+		float ad = dot(lineStart, plane_n);
+		float bd = dot(lineEnd, plane_n);
+		float t = (-plane_d - ad) / (bd - ad);
+		OVec3 lineStartToEnd = lineEnd-lineStart;
+		OVec3 lineToIntersect = lineStartToEnd * t;
+		return (lineStart+lineToIntersect);
+	}
 
 	~OVec3()
 	{
@@ -431,6 +481,7 @@ public:
 		out.m_z = in.m_x * m_mat[0][2] + in.m_y * m_mat[1][2] + in.m_z * m_mat[2][2] + m_mat[3][2];
 		float w = in.m_x * m_mat[0][3] + in.m_y * m_mat[1][3] + in.m_z * m_mat[2][3] + m_mat[3][3];
 
+		//v.w = i.x * m.m[0][3] + i.y * m.m[1][3] + i.z * m.m[2][3] + i.w * m.m[3][3];
 		if (w != 0.0f)
 		{
 			out.m_x /= w;

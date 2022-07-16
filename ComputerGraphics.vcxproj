@@ -148,6 +148,9 @@
     <ClInclude Include="MathHandler.h" />
     <ClInclude Include="Project.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="model.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
