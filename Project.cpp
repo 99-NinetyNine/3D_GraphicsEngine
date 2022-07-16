@@ -26,8 +26,6 @@ bool Engine::OnUserCreate()
 	meshAxes.LoadFromObjectFile("model.txt");
 
 
-
-
 	// Projection Matrix
 	float fNear = 0.1f;
 	float fFar = 500.0f;
@@ -101,10 +99,12 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 	matView = matCamera;
 
 
-	setTRS(OVec3(0.0f, 0.0f, 5.0f), OVec3(fTheta*2.0f, fTheta , fTheta), OVec3(1));
+	fTheta += fElapsedTime;
+	setTRS(OVec3(0.0f, 0.0f, 5.0f), OVec3(0,fTheta,fTheta*2.0f), OVec3(1));
 	drawModel(meshRocket);
 
-	setTRS(OVec3(25.0f, -20.0f, 20.0f), OVec3(0, fTheta * 0.5f, fTheta), OVec3(0.3));
+
+	setTRS(OVec3(25.0f, -20.0f, 20.0f), OVec3(0), OVec3(0.3));
 	drawModel(meshAxes);
 
 
@@ -237,6 +237,7 @@ void Engine::drawModel(mesh& model)
 void Engine::setTRS(OVec3 tranlate, OVec3 rotate, OVec3 scale)
 {
 	matWorld.setIdentity();
+	//rotate = rotate * (3.14 / 180.0);
 
 	OMat4 temp;
 	temp.setTranslation(tranlate);
