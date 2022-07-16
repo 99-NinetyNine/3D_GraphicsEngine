@@ -101,7 +101,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 	matView = matCamera;
 
 
-	setTRS(OVec3(0.0f, 0.0f, 5.0f), OVec3(0, fTheta * 0.5f, fTheta), OVec3(1));
+	setTRS(OVec3(0.0f, 0.0f, 5.0f), OVec3(fTheta*2.0f, fTheta , fTheta), OVec3(1));
 	drawModel(meshRocket);
 
 	setTRS(OVec3(25.0f, -20.0f, 20.0f), OVec3(0, fTheta * 0.5f, fTheta), OVec3(0.3));
@@ -110,6 +110,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
 	return true;
 }
+
 void Engine::drawModel(mesh& model)
 {
 	// Draw Triangles
@@ -117,8 +118,6 @@ void Engine::drawModel(mesh& model)
 	for (auto tri : model.tris)
 	{
 		triangle triProjected, triTransformed, triViewed;
-
-		// Rotate in Z-Axis
 
 		triTransformed.p[0] = matWorld * tri.p[0];
 		triTransformed.p[1] = matWorld * tri.p[1];
